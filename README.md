@@ -1,6 +1,6 @@
-# Backend Ruleta
+# Backend Ruleta (TypeScript)
 
-Servidor base con Node.js 20.11.1, Express y CORS.
+Servidor base con Node.js 20.11.1, Express, CORS, MongoDB Atlas y TypeScript.
 
 ## Instalación y Ejecución
 
@@ -8,9 +8,23 @@ Servidor base con Node.js 20.11.1, Express y CORS.
 # Instalar dependencias
 npm install
 
-# Modo desarrollo
+# Modo desarrollo (con recarga automática mediante tsx)
 npm run dev
 
-# Modo producción
+# Compilar a JavaScript
+npm run build
+
+# Ejecutar código compilado (producción)
 npm start
+```
+
+## Variables de Entorno (.env)
+
+Completar las credenciales en `.env`:
+
+```env
+PORT=3001
+MONGODB_USERNAME=
+MONGODB_PASSWORD=
+MONGODB_URI=
 ```

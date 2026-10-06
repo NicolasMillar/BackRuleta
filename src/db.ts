@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
 
-export const connectDB = async () => {
+export const connectDB = async (): Promise<void> => {
   try {
     let uri = process.env.MONGODB_URI;
 
@@ -9,7 +9,6 @@ export const connectDB = async () => {
       throw new Error('La variable MONGODB_URI no está definida en el archivo .env');
     }
 
-    // Si la URI contiene placeholders o se definieron credenciales por separado
     const username = process.env.MONGODB_USERNAME;
     const password = process.env.MONGODB_PASSWORD;
 
@@ -23,7 +22,8 @@ export const connectDB = async () => {
     await mongoose.connect(uri);
     console.log(' Conectado exitosamente a MongoDB Atlas');
   } catch (error) {
-    console.error(' Error al conectar con MongoDB Atlas:', error.message);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error(' Error al conectar con MongoDB Atlas:', errorMsg);
     process.exit(1);
   }
 };
