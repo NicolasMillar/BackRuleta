@@ -1,7 +1,8 @@
 export interface IParticipant {
   id?: string;
-  nombre: string;
-  victorias: number;
+  _id?: string;
+  name: string;
+  wins: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
