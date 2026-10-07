@@ -1,18 +1,19 @@
-import express, { Request, Response } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './db.js';
+import { routes } from './routes.js';
 
-const app = express();
+const app: Application = express();
 const PORT: number | string = process.env.PORT || 3001;
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Ruta de prueba inicial
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Servidor backend en TypeScript corriendo correctamente' });
+// Registrar rutas
+routes.forEach((route) => {
+  route.routes('/api/', app);
 });
 
 // Conectar a la base de datos e iniciar servidor
