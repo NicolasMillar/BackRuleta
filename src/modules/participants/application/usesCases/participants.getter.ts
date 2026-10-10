@@ -11,4 +11,8 @@ export class ParticipantGetter {
 
         return participant;
     }
+
+    async hasParticipantWithWins(): Promise<boolean> {
+        return await this.repository.hasParticipantWithWins();
+    }
 }

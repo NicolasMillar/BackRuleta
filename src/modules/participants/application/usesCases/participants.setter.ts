@@ -21,4 +21,8 @@ export class ParticipantSetter {
     async delete(name: string): Promise<boolean> {
         return await this.repository.delete(name);
     }
+
+    async resetAllWins(): Promise<boolean> {
+        return await this.repository.resetAllWins();
+    }
 }

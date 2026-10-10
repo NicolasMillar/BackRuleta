@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { ParticipantsRepositories } from './db/repositories/participants.repositories.js';
 import { ParticipantGetter } from '../application/usesCases/participants.getter.js';
 import { ParticipantSetter } from '../application/usesCases/participants.setter.js';
+import { DailyWinnerRepositories } from '../../dailyWinner/infrastructure/db/repositories/dailyWinner.repositories.js';
+import { DailyWinnerSetter } from '../../dailyWinner/application/usesCases/dailyWinner.setter.js';
 
 export class ParticipantController {
   getAll = async (req: Request, res: Response): Promise<void> => {
@@ -111,6 +113,25 @@ export class ParticipantController {
       res.status(200).json({ message: `Participante '${name}' eliminado exitosamente` });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Error al eliminar participante';
+      res.status(500).json({ error: message });
+    }
+  };
+
+  reset = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const dailyWinnerRepo = new DailyWinnerRepositories();
+      const dailyWinnerSetter = new DailyWinnerSetter(dailyWinnerRepo);
+      await dailyWinnerSetter.deleteAll();
+
+      const participantRepo = new ParticipantsRepositories();
+      const participantSetter = new ParticipantSetter(participantRepo);
+      await participantSetter.resetAllWins();
+
+      res.status(200).json({
+        message: 'Reinicio completado con éxito: historial de ganadores eliminado y victorias restablecidas a 0'
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error al realizar el reinicio';
       res.status(500).json({ error: message });
     }
   };

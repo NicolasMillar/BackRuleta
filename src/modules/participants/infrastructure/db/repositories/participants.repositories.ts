@@ -32,4 +32,14 @@ export class ParticipantsRepositories implements ParticipantPort {
         const result = await ParticipantModel.findOneAndDelete({ name });
         return !!result;
     }
+
+    async hasParticipantWithWins(): Promise<boolean> {
+        const count = await ParticipantModel.countDocuments({ wins: { $gt: 0 } });
+        return count > 0;
+    }
+
+    async resetAllWins(): Promise<boolean> {
+        await ParticipantModel.updateMany({}, { wins: 0 });
+        return true;
+    }
 }

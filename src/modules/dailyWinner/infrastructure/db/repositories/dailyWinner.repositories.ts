@@ -25,4 +25,9 @@ export class DailyWinnerRepositories implements DailyWinnerPort {
 
     return updated;
   }
+
+  async deleteAll(): Promise<boolean> {
+    await DailyWinnerModel.deleteMany({});
+    return true;
+  }
 }

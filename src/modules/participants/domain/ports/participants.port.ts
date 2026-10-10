@@ -6,4 +6,6 @@ export interface ParticipantPort {
     updateName(name: string, newName: string): Promise<IParticipant | null>;
     addWin(name: string): Promise<IParticipant | null>;
     delete(name: string): Promise<boolean>;
+    hasParticipantWithWins(): Promise<boolean>;
+    resetAllWins(): Promise<boolean>;
 }

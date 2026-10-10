@@ -13,4 +13,8 @@ export class DailyWinnerSetter {
   async update(id: string, name: string): Promise<IDailyWinner> {
     return await this.repository.update(id, name);
   }
+
+  async deleteAll(): Promise<boolean> {
+    return await this.repository.deleteAll();
+  }
 }
