@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
-import { ParticipantPort } from '../domain/ports/participants.port.js';
+import { ParticipantsRepositories } from './db/repositories/participants.repositories.js';
+import { ParticipantGetter } from '../application/usesCases/participants.getter.js';
+import { ParticipantSetter } from '../application/usesCases/participants.setter.js';
 
 export class ParticipantController {
-  constructor(
-    private readonly participantRepository: ParticipantPort
-  ) { }
-
   getAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      const participants = await this.participantRepository.getAll();
+      const repository = new ParticipantsRepositories();
+      const getter = new ParticipantGetter(repository);
+
+      const participants = await getter.getAll();
       res.status(200).json(participants);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Error al obtener participantes';
@@ -20,11 +21,14 @@ export class ParticipantController {
     try {
       const { name } = req.body;
       if (typeof name !== 'string' || name.trim() === '') {
-        res.status(400).json({ error: 'The name must be a valid non-empty string' });
+        res.status(400).json({ error: 'El nombre debe ser un string valido' });
         return;
       }
 
-      const newParticipant = await this.participantRepository.create(name.trim());
+      const repository = new ParticipantsRepositories();
+      const setter = new ParticipantSetter(repository);
+
+      const newParticipant = await setter.create(name.trim());
       res.status(201).json(newParticipant);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Error al crear participante';
@@ -32,8 +36,56 @@ export class ParticipantController {
     }
   };
 
-  update = async (req: Request, res: Response): Promise<void> => {
-    res.json({ message: `Actualizar participante por nombre: ${req.params.name}`, data: req.body });
+  updateName = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const paramName = Array.isArray(req.params.name) ? req.params.name[0] : req.params.name;
+      const { newName } = req.body;
+
+      if (!newName || typeof newName !== 'string' || newName.trim() === '') {
+        res.status(400).json({ error: 'El nuevo nombre (newName) debe ser un string valido' });
+        return;
+      }
+
+      const repository = new ParticipantsRepositories();
+      const setter = new ParticipantSetter(repository);
+
+      const updatedParticipant = await setter.updateName(paramName, newName.trim());
+
+      if (!updatedParticipant) {
+        res.status(404).json({ error: `No se encontro el participante con nombre: ${paramName}` });
+        return;
+      }
+
+      res.status(200).json(updatedParticipant);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error al actualizar el nombre del participante';
+      res.status(500).json({ error: message });
+    }
+  };
+
+  registerWin = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const rawName = req.body.name || req.params.name;
+      const name = String(rawName).trim();
+
+      const repository = new ParticipantsRepositories();
+      const setter = new ParticipantSetter(repository);
+
+      const updatedParticipant = await setter.addWin(name);
+
+      if (!updatedParticipant) {
+        res.status(404).json({ error: `No se encontro el participante con nombre: ${name}` });
+        return;
+      }
+
+      res.status(200).json({
+        message: 'Victoria registrada exitosamente',
+        participant: updatedParticipant
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error al registrar victoria del participante';
+      res.status(500).json({ error: message });
+    }
   };
 
   delete = async (req: Request, res: Response): Promise<void> => {

@@ -11,4 +11,20 @@ export class ParticipantsRepositories implements ParticipantPort {
         const participant = await ParticipantModel.create({ name, wins: 0 });
         return participant.toObject<IParticipant>();
     }
+
+    async updateName(name: string, newName: string): Promise<IParticipant | null> {
+        return await ParticipantModel.findOneAndUpdate(
+            { name },
+            { name: newName },
+            { new: true }
+        ).lean<IParticipant | null>();
+    }
+
+    async addWin(name: string): Promise<IParticipant | null> {
+        return await ParticipantModel.findOneAndUpdate(
+            { name },
+            { $inc: { wins: 1 } },
+            { new: true }
+        ).lean<IParticipant | null>();
+    }
 }
