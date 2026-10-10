@@ -27,4 +27,9 @@ export class ParticipantsRepositories implements ParticipantPort {
             { new: true }
         ).lean<IParticipant | null>();
     }
+
+    async delete(name: string): Promise<boolean> {
+        const result = await ParticipantModel.findOneAndDelete({ name });
+        return !!result;
+    }
 }

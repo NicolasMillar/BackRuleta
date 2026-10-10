@@ -17,4 +17,8 @@ export class ParticipantSetter {
     async addWin(name: string): Promise<IParticipant | null> {
         return await this.repository.addWin(name);
     }
+
+    async delete(name: string): Promise<boolean> {
+        return await this.repository.delete(name);
+    }
 }

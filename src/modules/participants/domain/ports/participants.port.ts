@@ -5,4 +5,5 @@ export interface ParticipantPort {
     create(name: string): Promise<IParticipant>;
     updateName(name: string, newName: string): Promise<IParticipant | null>;
     addWin(name: string): Promise<IParticipant | null>;
+    delete(name: string): Promise<boolean>;
 }

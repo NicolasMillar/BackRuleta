@@ -89,6 +89,29 @@ export class ParticipantController {
   };
 
   delete = async (req: Request, res: Response): Promise<void> => {
-    res.json({ message: `Eliminar participante por nombre: ${req.params.name}` });
+    try {
+      const paramName = Array.isArray(req.params.name) ? req.params.name[0] : req.params.name;
+      const name = String(paramName).trim();
+
+      if (!name) {
+        res.status(400).json({ error: 'El nombre del participante es obligatorio' });
+        return;
+      }
+
+      const repository = new ParticipantsRepositories();
+      const setter = new ParticipantSetter(repository);
+
+      const deleted = await setter.delete(name);
+
+      if (!deleted) {
+        res.status(404).json({ error: `No se encontro el participante con nombre: ${name}` });
+        return;
+      }
+
+      res.status(200).json({ message: `Participante '${name}' eliminado exitosamente` });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error al eliminar participante';
+      res.status(500).json({ error: message });
+    }
   };
 }
