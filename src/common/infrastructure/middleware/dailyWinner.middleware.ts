@@ -35,13 +35,10 @@ export class DailyWinnerMiddleware {
           });
           return;
         }
-
-        if (latestWinner._id) {
-          await setter.update(latestWinner._id.toString(), name.trim());
-        }
-      } else {
-        await setter.create(name.trim());
       }
+
+      // Si no hay ganador hoy (o es el primero), crea un nuevo registro en el historial
+      await setter.create(name.trim());
 
       next();
     } catch (error) {

@@ -3,6 +3,10 @@ import { DailyWinnerPort } from "../../../domain/ports/dailyWinner.port.js";
 import { DailyWinnerModel } from "../schemas/dailyWinner.schema.js";
 
 export class DailyWinnerRepositories implements DailyWinnerPort {
+  async getAll(): Promise<IDailyWinner[]> {
+    return await DailyWinnerModel.find().sort({ date: -1 }).lean<IDailyWinner[]>();
+  }
+
   async getLatest(): Promise<IDailyWinner | null> {
     return await DailyWinnerModel.findOne().sort({ date: -1 }).lean<IDailyWinner | null>();
   }

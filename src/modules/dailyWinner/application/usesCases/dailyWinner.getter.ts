@@ -6,6 +6,10 @@ export class DailyWinnerGetter {
     private readonly repository: DailyWinnerPort
   ) { }
 
+  async getAll(): Promise<IDailyWinner[]> {
+    return await this.repository.getAll();
+  }
+
   async getLatest(): Promise<IDailyWinner | null> {
     return await this.repository.getLatest();
   }
